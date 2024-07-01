@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "@/styles/Main.module.scss";
 import Link from "next/link";
 
@@ -13,10 +13,14 @@ interface Post {
   image: string;
 }
 
-const Main: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
+interface MainProps {
+  posts: Post[];
+  categories: string[];
+  loading: boolean;
+}
+
+const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>(posts);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -26,36 +30,10 @@ const Main: React.FC = () => {
   const [newDescription, setNewDescription] = useState("");
   const [newImage, setNewImage] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true); // Loading state
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      const response = await fetch("https://fakestoreapi.com/products");
-      const data: Post[] = await response.json();
-      setPosts(data);
-      setFilteredPosts(data);
-      setLoading(false);
-    };
-    fetchPosts();
-  }, []);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const response = await fetch(
-        "https://fakestoreapi.com/products/categories"
-      );
-      const data: string[] = await response.json();
-      setCategories(data);
-    };
-    fetchCategories();
-  }, []);
 
   useEffect(() => {
     if (selectedCategory) {
-      const filtered = posts.filter(
-        (post) => post.category === selectedCategory
-      );
+      const filtered = posts.filter((post) => post.category === selectedCategory);
       setFilteredPosts(filtered);
     } else {
       setFilteredPosts(posts);
@@ -71,7 +49,7 @@ const Main: React.FC = () => {
       description: newDescription,
       image: newImage,
     };
-    setPosts([...posts, newPost]);
+    setFilteredPosts([...filteredPosts, newPost]);
     setShowAddModal(false);
     setNewTitle("");
     setNewPrice("");
@@ -108,7 +86,7 @@ const Main: React.FC = () => {
 
   const handleSaveUpdate = () => {
     if (selectedPostId !== null) {
-      const updatedPosts = posts.map((post) =>
+      const updatedPosts = filteredPosts.map((post) =>
         post.id === selectedPostId
           ? {
               ...post,
@@ -120,7 +98,7 @@ const Main: React.FC = () => {
             }
           : post
       );
-      setPosts(updatedPosts);
+      setFilteredPosts(updatedPosts);
       setShowUpdateModal(false);
       setNewTitle("");
       setNewPrice("");
@@ -132,13 +110,11 @@ const Main: React.FC = () => {
   };
 
   const handleDeletePost = (id: number) => {
-    const filteredPosts = posts.filter((post) => post.id !== id);
-    setPosts(filteredPosts);
+    const filtered = filteredPosts.filter((post) => post.id !== id);
+    setFilteredPosts(filtered);
   };
 
-  const handleCategoryChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(event.target.value);
   };
 
