@@ -5,24 +5,8 @@ import styles from "@/styles/Main.module.scss";
 import Link from "next/link";
 import upArrow from "../../public/upArrow.svg";
 import downArrow from "../../public/downArrow.svg";
-interface Post {
-  id: number;
-  title: string;
-  price: number;
-  category: string;
-  description: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-  image: string;
-}
-
-interface MainProps {
-  posts: Post[];
-  categories: string[];
-  loading: boolean;
-}
+import { Post } from "@/types/Posts";
+import { MainProps } from "@/types/MainProps";
 
 const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>(posts);
