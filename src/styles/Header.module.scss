@@ -35,7 +35,15 @@ $color-text: #fff;
 		padding-bottom: 0;
 	}
 }
-
+.navAccount{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+}
+.darkModeBtn{
+	cursor: pointer;
+}
 .navWrapper {
 	display: flex;
 	justify-content: center;

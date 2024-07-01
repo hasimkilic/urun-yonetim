@@ -29,12 +29,14 @@ $color-primary: #1f2a38;
     gap: 20px;
     padding: 20px;
 }
-.controls{
+
+.controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 }
+
 .newProductBtn {
     background-color: #0e920e;
     color: white;
@@ -44,6 +46,7 @@ $color-primary: #1f2a38;
     cursor: pointer;
     margin: 5px;
     width: 6rem;
+
     &:hover {
         background-color: #00b542;
     }
@@ -53,6 +56,7 @@ $color-primary: #1f2a38;
         box-shadow: 0 0 0 3px rgba(0, 243, 65, 0.5);
     }
 }
+
 .deleteProductBtn {
     background-color: #c71313;
     color: white;
@@ -62,6 +66,7 @@ $color-primary: #1f2a38;
     cursor: pointer;
     width: 6rem;
     margin: 5px;
+
     &:hover {
         background-color: #e54e44;
     }
@@ -71,7 +76,8 @@ $color-primary: #1f2a38;
         box-shadow: 0 0 0 3px rgba(243, 8, 0, 0.5);
     }
 }
-.selectBox{
+
+.selectBox {
     width: 300px;
     padding: 0.5rem;
     font-size: 1rem;
@@ -79,7 +85,8 @@ $color-primary: #1f2a38;
     border-radius: 4px;
     margin-bottom: 1rem;
 }
-.addProductBtn{
+
+.addProductBtn {
     background-color: #0070f3;
     color: white;
     border: none;
@@ -92,9 +99,11 @@ $color-primary: #1f2a38;
     align-items: center;
     gap: 5px;
     cursor: pointer;
+
     .icon {
         font-size: 1.5rem;
     }
+
     &:hover {
         background-color: #005bb5;
     }
@@ -104,9 +113,11 @@ $color-primary: #1f2a38;
         box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.5);
     }
 }
-.loading{
+
+.loading {
     padding-bottom: 1rem;
 }
+
 .modal {
     position: fixed;
     top: 0;
@@ -125,7 +136,8 @@ $color-primary: #1f2a38;
         width: 90%;
         max-width: 500px;
         text-align: center;
-        .inputGroup{
+
+        .inputGroup {
             display: flex;
             flex-direction: column;
             justify-content: left;
@@ -133,6 +145,7 @@ $color-primary: #1f2a38;
             gap: 5px;
             font-weight: bold;
         }
+
         select {
             width: 100%;
             padding: 0.5rem;
@@ -140,7 +153,7 @@ $color-primary: #1f2a38;
             border: 1px solid #ccc;
             border-radius: 4px;
             margin-bottom: 1rem;
-          }
+        }
 
         h2 {
             margin-bottom: 20px;
@@ -180,56 +193,63 @@ $color-primary: #1f2a38;
     width: 100%;
     border: 1px solid $color-form-highlight;
     overflow-x: auto;
-  }
-  
-  .tableHeader {
+}
+
+.tableHeader {
     display: flex;
     background: $color-primary;
     padding: ($half-spacing-unit * 0.3) 0;
     border-radius: 0.3rem;
-  }
-  
-  .tableRow {
+}
+
+.tableRow {
     display: flex;
     width: 100%;
     padding: ($half-spacing-unit * 1.5) 0;
+
     &:nth-of-type(odd) {
-      background: $color-form-highlight;
+        background: $color-form-highlight;
     }
-  }
-  
-  .tableData, .header__item {
+}
+
+.tableData,
+.header__item {
     flex: 1 1 20%;
     text-align: left;
     padding: $base-spacing-unit;
-    overflow: hidden; /* İçeriğin taşmasını önlemek için taşma kontrolü */
-    text-overflow: ellipsis; /* Taşan içeriklerde üç nokta görüntüleme */
-  }
-  
-  .filter__link {
+    overflow: hidden;
+    /* İçeriğin taşmasını önlemek için taşma kontrolü */
+    text-overflow: ellipsis;
+    /* Taşan içeriklerde üç nokta görüntüleme */
+}
+
+.filter__link {
     color: white;
     text-decoration: none;
     position: relative;
-    display: inline-block;
     padding-left: $base-spacing-unit;
     padding-right: $base-spacing-unit;
     border-radius: 0.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
     &::after {
-      content: '';
-      position: absolute;
-      right: -($half-spacing-unit * 1.5);
-      color: white;
-      font-size: $half-spacing-unit;
-      top: 50%;
-      transform: translateY(-50%);
+        content: '';
+        position: absolute;
+        right: -($half-spacing-unit * 1.5);
+        color: white;
+        font-size: $half-spacing-unit;
+        top: 50%;
+        transform: translateY(-50%);
     }
-  
+
     &.desc::after {
-      content: '(desc)';
+        content: '(desc)';
     }
-  
+
     &.asc::after {
-      content: '(asc)';
+        content: '(asc)';
     }
-  }
-  
+}

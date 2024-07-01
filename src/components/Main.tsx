@@ -3,13 +3,18 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/Main.module.scss";
 import Link from "next/link";
-
+import upArrow from "../../public/upArrow.svg";
+import downArrow from "../../public/downArrow.svg";
 interface Post {
   id: number;
   title: string;
-  price: string;
+  price: number;
   category: string;
   description: string;
+  rating: {
+    rate: number;
+    count: number;
+  };
   image: string;
 }
 
@@ -25,37 +30,87 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [newPrice, setNewPrice] = useState("");
+  const [newPrice, setNewPrice] = useState<number | null>(null);
   const [newCategory, setNewCategory] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const [newRating, setNewRating] = useState<number | null>(null);
   const [newImage, setNewImage] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [sortOrderPrice, setSortOrderPrice] = useState<"asc" | "desc">("desc");
+  const [sortOrderRating, setSortOrderRating] = useState<"asc" | "desc">(
+    "desc"
+  );
 
   useEffect(() => {
     if (selectedCategory) {
-      const filtered = posts.filter((post) => post.category === selectedCategory);
+      const filtered = posts.filter(
+        (post) => post.category === selectedCategory
+      );
       setFilteredPosts(filtered);
     } else {
       setFilteredPosts(posts);
     }
   }, [selectedCategory, posts]);
-
-  const handleAddPost = () => {
-    const newPost: Post = {
-      id: posts.length + 1,
+  const handleSortByPrice = () => {
+    const sortedPosts = [...filteredPosts].sort((a, b) => {
+      if (sortOrderPrice === "asc") {
+        return a.price - b.price;
+      } else {
+        return b.price - a.price;
+      }
+    });
+    setFilteredPosts(sortedPosts);
+    setSortOrderPrice(sortOrderPrice === "asc" ? "desc" : "asc");
+  };
+  const handleSortByRating = () => {
+    const sortedPosts = [...filteredPosts].sort((a, b) => {
+      if (sortOrderRating === "asc") {
+        return a.rating.rate - b.rating.rate;
+      } else {
+        return b.rating.rate - a.rating.rate;
+      }
+    });
+    setFilteredPosts(sortedPosts);
+    setSortOrderRating(sortOrderRating === "asc" ? "desc" : "asc");
+  };
+  const handleAddPost = async () => {
+    const newPost: Omit<Post, "id"> = {
       title: newTitle,
-      price: newPrice,
+      price: newPrice || 0,
       category: newCategory,
       description: newDescription,
+      rating: {
+        rate: newRating || 0,
+        count: newRating || 0,
+      },
       image: newImage,
     };
-    setFilteredPosts([...filteredPosts, newPost]);
-    setShowAddModal(false);
-    setNewTitle("");
-    setNewPrice("");
-    setNewCategory("");
-    setNewDescription("");
-    setNewImage("");
+
+    try {
+      const response = await fetch("https://fakestoreapi.com/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPost),
+      });
+
+      if (!response.ok) {
+        throw new Error("Ürün eklenirken bir hata oluştu");
+      }
+
+      const createdPost: Post = await response.json();
+      setFilteredPosts([...filteredPosts, createdPost]);
+      setShowAddModal(false);
+      setNewTitle("");
+      setNewPrice(null);
+      setNewCategory("");
+      setNewDescription("");
+      setNewRating(null);
+      setNewImage("");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleOpenAddModal = () => {
@@ -65,9 +120,10 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
   const handleCloseAddModal = () => {
     setShowAddModal(false);
     setNewTitle("");
-    setNewPrice("");
+    setNewPrice(null);
     setNewCategory("");
     setNewDescription("");
+    setNewRating(null);
     setNewImage("");
   };
 
@@ -80,41 +136,81 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
       setNewCategory(postToUpdate.category);
       setNewDescription(postToUpdate.description);
       setNewImage(postToUpdate.image);
+      setNewRating(postToUpdate.rating.rate);
       setShowUpdateModal(true);
     }
   };
 
-  const handleSaveUpdate = () => {
+  const handleSaveUpdate = async () => {
     if (selectedPostId !== null) {
-      const updatedPosts = filteredPosts.map((post) =>
-        post.id === selectedPostId
-          ? {
-              ...post,
-              title: newTitle,
-              price: newPrice,
-              category: newCategory,
-              description: newDescription,
-              image: newImage,
-            }
-          : post
-      );
-      setFilteredPosts(updatedPosts);
-      setShowUpdateModal(false);
-      setNewTitle("");
-      setNewPrice("");
-      setNewCategory("");
-      setNewDescription("");
-      setNewImage("");
-      setSelectedPostId(null);
+      const updatedPost: Post = {
+        id: selectedPostId,
+        title: newTitle,
+        price: newPrice || 0,
+        category: newCategory,
+        description: newDescription,
+        rating: {
+          rate: newRating || 0,
+          count: newRating || 0,
+        },
+        image: newImage,
+      };
+
+      try {
+        const response = await fetch(
+          `https://fakestoreapi.com/products/${selectedPostId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedPost),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Ürün güncellenirken bir hata oluştu");
+        }
+
+        const updatedPostFromAPI: Post = await response.json();
+        const updatedPosts = filteredPosts.map((post) =>
+          post.id === selectedPostId ? updatedPostFromAPI : post
+        );
+        setFilteredPosts(updatedPosts);
+        setShowUpdateModal(false);
+        setNewTitle("");
+        setNewPrice(null);
+        setNewCategory("");
+        setNewDescription("");
+        setNewRating(null);
+        setNewImage("");
+        setSelectedPostId(null);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
-  const handleDeletePost = (id: number) => {
-    const filtered = filteredPosts.filter((post) => post.id !== id);
-    setFilteredPosts(filtered);
+  const handleDeletePost = async (id: number) => {
+    try {
+      const response = await fetch(`https://fakestoreapi.com/products/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Ürün silinirken bir hata oluştu");
+      }
+
+      const filtered = filteredPosts.filter((post) => post.id !== id);
+      setFilteredPosts(filtered);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setSelectedCategory(event.target.value);
   };
 
@@ -159,8 +255,30 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
               </Link>
             </div>
             <div className={styles.header__item}>
-              <Link id="losses" className={styles.filter__link} href="#">
-                Price
+              <Link
+                id="losses"
+                onClick={handleSortByPrice}
+                className={styles.filter__link}
+                href="#"
+              >
+                <span>Price</span>
+                {sortOrderPrice === "asc" ? (
+                  <Image
+                    src={upArrow}
+                    width={16}
+                    height={16}
+                    alt="upArrow"
+                    className={styles.sortArrow}
+                  />
+                ) : (
+                  <Image
+                    src={downArrow}
+                    width={16}
+                    height={16}
+                    alt="downArrow"
+                    className={styles.sortArrow}
+                  />
+                )}
               </Link>
             </div>
             <div className={styles.header__item}>
@@ -171,6 +289,33 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
             <div className={styles.header__item}>
               <Link id="total" className={styles.filter__link} href="#">
                 Desc
+              </Link>
+            </div>
+            <div className={styles.header__item}>
+              <Link
+                id="total"
+                className={`${styles.filter__link} ${styles.tableLink}`}
+                onClick={handleSortByRating}
+                href="#"
+              >
+                Rating
+                {sortOrderRating === "asc" ? (
+                  <Image
+                    src={upArrow}
+                    width={16}
+                    height={16}
+                    alt="upArrow"
+                    className={styles.sortArrow}
+                  />
+                ) : (
+                  <Image
+                    src={downArrow}
+                    width={16}
+                    height={16}
+                    alt="downArrow"
+                    className={styles.sortArrow}
+                  />
+                )}
               </Link>
             </div>
             <div className={styles.header__item}>
@@ -199,6 +344,7 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                     ? `${post.description.slice(0, 100)}...`
                     : post.description}
                 </div>
+                <div className={styles.tableData}>{post.rating.rate}</div>
                 <div className={styles.tableData}>
                   <button
                     className={styles.newProductBtn}
@@ -235,10 +381,10 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
             <div className={styles.inputGroup}>
               <label htmlFor="newPrice">Fiyat:</label>
               <input
-                type="text"
+                type="number"
                 id="newPrice"
-                value={newPrice}
-                onChange={(e) => setNewPrice(e.target.value)}
+                value={newPrice ?? ""}
+                onChange={(e) => setNewPrice(parseFloat(e.target.value))}
                 placeholder="Fiyat"
               />
             </div>
@@ -281,7 +427,6 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
           </div>
         </div>
       )}
-
       {showUpdateModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
@@ -299,10 +444,10 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
             <div className={styles.inputGroup}>
               <label htmlFor="price">Fiyat:</label>
               <input
-                type="text"
+                type="number"
                 id="price"
-                value={newPrice}
-                onChange={(e) => setNewPrice(e.target.value)}
+                value={newPrice ?? ""}
+                onChange={(e) => setNewPrice(parseFloat(e.target.value))}
                 placeholder="Fiyat"
               />
             </div>
