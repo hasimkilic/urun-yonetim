@@ -1,8 +1,7 @@
 import React, { ReactNode } from 'react';
 
-const Page: React.FC<{ children: ReactNode }> = ({ children }) => {
+const Page = ({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
 };
-
 
 export default Page;
