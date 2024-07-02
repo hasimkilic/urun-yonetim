@@ -1,11 +1,11 @@
 export interface Post {
   id: number;
   title: string;
-  price: number;
+  price: string;
   category: string;
   description: string;
   rating: {
-    rate: number;
+    rate: string;
     count: number;
   };
   image: string;

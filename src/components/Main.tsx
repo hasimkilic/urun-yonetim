@@ -15,10 +15,10 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [newPrice, setNewPrice] = useState<number | null>(null);
+  const [newPrice, setNewPrice] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [newDescription, setNewDescription] = useState("");
-  const [newRating, setNewRating] = useState<number | null>(null);
+  const [newRating, setNewRating] = useState("");
   const [newImage, setNewImage] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [sortOrderPrice, setSortOrderPrice] = useState<"asc" | "desc">("desc");
@@ -36,12 +36,13 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
       setFilteredPosts(posts);
     }
   }, [selectedCategory, posts]);
+
   const handleSortByPrice = () => {
     const sortedPosts = [...filteredPosts].sort((a, b) => {
       if (sortOrderPrice === "asc") {
-        return a.price - b.price;
+        return Number(a.price) - Number(b.price);
       } else {
-        return b.price - a.price;
+        return Number(b.price) - Number(a.price);
       }
     });
     setFilteredPosts(sortedPosts);
@@ -49,24 +50,30 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
   };
   const handleSortByRating = () => {
     const sortedPosts = [...filteredPosts].sort((a, b) => {
+      // Check if `rating` exists and has a `rate` property
+      const rateA = Number(a.rating?.rate) || 0;
+      const rateB = Number(b.rating?.rate) || 0;
+
       if (sortOrderRating === "asc") {
-        return a.rating.rate - b.rating.rate;
+        return rateA - rateB;
       } else {
-        return b.rating.rate - a.rating.rate;
+        return rateB - rateA;
       }
     });
+
     setFilteredPosts(sortedPosts);
     setSortOrderRating(sortOrderRating === "asc" ? "desc" : "asc");
   };
+
   const handleAddPost = async () => {
     const newPost: Omit<Post, "id"> = {
       title: newTitle,
-      price: newPrice || 0,
+      price: newPrice,
       category: newCategory,
       description: newDescription,
       rating: {
-        rate: newRating || 0,
-        count: newRating || 0,
+        rate: newRating ,
+        count: Number(newRating) ,
       },
       image: newImage,
     };
@@ -88,10 +95,10 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
       setFilteredPosts([...filteredPosts, createdPost]);
       setShowAddModal(false);
       setNewTitle("");
-      setNewPrice(null);
+      setNewPrice("");
       setNewCategory("");
       setNewDescription("");
-      setNewRating(null);
+      setNewRating("");
       setNewImage("");
     } catch (error) {
       console.error(error);
@@ -105,10 +112,10 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
   const handleCloseAddModal = () => {
     setShowAddModal(false);
     setNewTitle("");
-    setNewPrice(null);
+    setNewPrice("");
     setNewCategory("");
     setNewDescription("");
-    setNewRating(null);
+    setNewRating("");
     setNewImage("");
   };
 
@@ -121,22 +128,21 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
       setNewCategory(postToUpdate.category);
       setNewDescription(postToUpdate.description);
       setNewImage(postToUpdate.image);
-      setNewRating(postToUpdate.rating?.rate ?? null);
+      setNewRating(postToUpdate.rating.rate);
       setShowUpdateModal(true);
     }
   };
-
   const handleSaveUpdate = async () => {
     if (selectedPostId !== null) {
       const updatedPost: Post = {
         id: selectedPostId,
         title: newTitle,
-        price: newPrice || 0,
+        price: newPrice,
         category: newCategory,
         description: newDescription,
         rating: {
-          rate: newRating || 0,
-          count: newRating || 0,
+          rate: newRating,
+          count: Number(newRating) || 0,
         },
         image: newImage,
       };
@@ -164,10 +170,10 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
         setFilteredPosts(updatedPosts);
         setShowUpdateModal(false);
         setNewTitle("");
-        setNewPrice(null);
+        setNewPrice("");
         setNewCategory("");
         setNewDescription("");
-        setNewRating(null);
+        setNewRating("");
         setNewImage("");
         setSelectedPostId(null);
       } catch (error) {
@@ -372,7 +378,7 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                 type="number"
                 id="newPrice"
                 value={newPrice ?? ""}
-                onChange={(e) => setNewPrice(parseFloat(e.target.value))}
+                onChange={(e) => setNewPrice(e.target.value)}
                 placeholder="Fiyat"
               />
             </div>
@@ -406,7 +412,7 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                 type="number"
                 id="newRating"
                 value={newRating ?? ""}
-                onChange={(e) => setNewRating(parseFloat(e.target.value))}
+                onChange={(e) => setNewRating(e.target.value)}
                 placeholder="Rating"
               />
             </div>
@@ -445,7 +451,7 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                 type="number"
                 id="price"
                 value={newPrice ?? ""}
-                onChange={(e) => setNewPrice(parseFloat(e.target.value))}
+                onChange={(e) => setNewPrice(e.target.value)}
                 placeholder="Fiyat"
               />
             </div>
@@ -479,7 +485,7 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                 type="number"
                 id="newRating"
                 value={newRating ?? 0}
-                onChange={(e) => setNewRating(parseFloat(e.target.value))}
+                onChange={(e) => setNewRating(e.target.value)}
                 placeholder="Rating"
               />
             </div>
