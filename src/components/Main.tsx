@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/Main.module.scss";
+import stylesT from "@/styles/Table.module.scss";
 import Link from "next/link";
 import upArrow from "../../public/upArrow.svg";
 import downArrow from "../../public/downArrow.svg";
@@ -120,7 +121,7 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
       setNewCategory(postToUpdate.category);
       setNewDescription(postToUpdate.description);
       setNewImage(postToUpdate.image);
-      setNewRating(postToUpdate.rating.rate);
+      setNewRating(postToUpdate.rating?.rate ?? null);
       setShowUpdateModal(true);
     }
   };
@@ -220,25 +221,25 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
         </button>
       </div>
       {loading && <p className={styles.loading}>Veriler yükleniyor...</p>}
-      <div className={styles.containerTable}>
-        <div className={styles.table}>
-          <div className={styles.tableHeader}>
-            <div className={styles.header__item}>
+      <div className={stylesT.container}>
+        <div className={stylesT.table}>
+          <div className={stylesT.row}>
+            <div className={stylesT.cell}>
               <Link id="name" className={styles.filter__link} href="#">
                 Id
               </Link>
             </div>
-            <div className={styles.header__item}>
+            <div className={stylesT.cell}>
               <Link id="wins" className={styles.filter__link} href="#">
                 Image
               </Link>
             </div>
-            <div className={styles.header__item}>
+            <div className={stylesT.cell}>
               <Link id="draws" className={styles.filter__link} href="#">
                 Title
               </Link>
             </div>
-            <div className={styles.header__item}>
+            <div className={stylesT.cell}>
               <Link
                 id="losses"
                 onClick={handleSortByPrice}
@@ -265,17 +266,17 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                 )}
               </Link>
             </div>
-            <div className={styles.header__item}>
+            <div className={stylesT.cell}>
               <Link id="total" className={styles.filter__link} href="#">
                 Category
               </Link>
             </div>
-            <div className={styles.header__item}>
+            <div className={stylesT.cell}>
               <Link id="total" className={styles.filter__link} href="#">
                 Desc
               </Link>
             </div>
-            <div className={styles.header__item}>
+            <div className={stylesT.cell}>
               <Link
                 id="total"
                 className={`${styles.filter__link} ${styles.tableLink}`}
@@ -302,50 +303,53 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                 )}
               </Link>
             </div>
-            <div className={styles.header__item}>
+            <div className={stylesT.cell}>
               <Link id="total" className={styles.filter__link} href="#">
                 Actions
               </Link>
             </div>
           </div>
-          <div className={styles.tableContent}>
-            {filteredPosts.map((post) => (
-              <div key={post.id} className={styles.tableRow}>
-                <div className={styles.tableData}>{post.id}</div>
-                <div className={styles.tableData}>
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    width={80}
-                    height={80}
-                  />
-                </div>
-                <div className={styles.tableData}>{post.title}</div>
-                <div className={styles.tableData}>{post.price}</div>
-                <div className={styles.tableData}>{post.category}</div>
-                <div className={styles.tableData}>
-                  {post.description.length > 100
-                    ? `${post.description.slice(0, 100)}...`
-                    : post.description}
-                </div>
-                <div className={styles.tableData}>{post.rating.rate}</div>
-                <div className={styles.tableData}>
-                  <button
-                    className={styles.newProductBtn}
-                    onClick={() => handleUpdatePost(post.id)}
-                  >
-                    Güncelle
-                  </button>
-                  <button
-                    className={styles.deleteProductBtn}
-                    onClick={() => handleDeletePost(post.id)}
-                  >
-                    Sil
-                  </button>
-                </div>
+          {filteredPosts.map((post) => (
+            <div key={post.id} className={stylesT.row}>
+              <div className={stylesT.cell}>{post.id}</div>
+              <div className={stylesT.cell}>
+                <Image
+                  src={post.image}
+                  alt={post.title}
+                  width={80}
+                  height={80}
+                  className={stylesT.photo}
+                />
               </div>
-            ))}
-          </div>
+              <div className={stylesT.cell && stylesT.title}>{post.title}</div>
+              <div className={stylesT.cell}>$ {post.price}</div>
+              <div className={stylesT.cell}>{post.category}</div>
+              <div className={stylesT.cell}>
+                {post.description.length > 100
+                  ? `${post.description.slice(0, 100)}...`
+                  : post.description}
+              </div>
+              <div className={stylesT.cell}>
+                {" "}
+                {post.rating ? post.rating.rate : "No Rating"}
+              </div>
+              <div className={stylesT.cell}>
+                {" "}
+                <button
+                  className={styles.newProductBtn}
+                  onClick={() => handleUpdatePost(post.id)}
+                >
+                  Güncelle
+                </button>
+                <button
+                  className={styles.deleteProductBtn}
+                  onClick={() => handleDeletePost(post.id)}
+                >
+                  Sil
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       {showAddModal && (
@@ -394,6 +398,16 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
                 placeholder="Açıklama"
+              />
+            </div>
+            <div className={styles.inputGroup}>
+              <label htmlFor="newRating">Rating:</label>
+              <input
+                type="number"
+                id="newRating"
+                value={newRating ?? ""}
+                onChange={(e) => setNewRating(parseFloat(e.target.value))}
+                placeholder="Rating"
               />
             </div>
             <div className={styles.inputGroup}>
@@ -457,6 +471,16 @@ const Main: React.FC<MainProps> = ({ posts, categories, loading }) => {
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
                 placeholder="Açıklama"
+              />
+            </div>
+            <div className={styles.inputGroup}>
+              <label htmlFor="newRating">Rating:</label>
+              <input
+                type="number"
+                id="newRating"
+                value={newRating ?? 0}
+                onChange={(e) => setNewRating(parseFloat(e.target.value))}
+                placeholder="Rating"
               />
             </div>
             <div className={styles.inputGroup}>
