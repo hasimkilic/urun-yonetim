@@ -1,11 +1,22 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import styles from "@/styles/Header.module.scss";
 import Link from "next/link";
 import Image from "next/image";
-import dark from "../../public/darkMode.svg";
+import darkModeIcon from "../../public/darkMode.svg";
+import lightModeIcon from "../../public/lightMode.svg";
+
 export default function Header() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  const themeClass = isDarkMode ? styles.darkMode : styles.lightMode;
+
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${themeClass}`}>
       <div className={styles.siteHeaderWrapper}>
         <div>
           <Link href="/dashboard" className={styles.brand}>
@@ -17,8 +28,9 @@ export default function Header() {
             className={styles.navToggle}
             aria-expanded="false"
             type="button"
+            onClick={toggleDarkMode}
           >
-            <Image src={"./menu.svg"} width={24} height={24} alt="menu" />
+            <Image src={"/menu.svg"} width={24} height={24} alt="menu" />
           </button>
           <ul className={styles.navWrapper}>
             <li className={styles.navItem}>
@@ -37,9 +49,14 @@ export default function Header() {
             className={styles.darkModeBtn}
             aria-expanded="false"
             type="button"
+            onClick={toggleDarkMode}
           >
-            <Image width={20} height={20} src="https://img.icons8.com/external-linear-outline-icons-papa-vector/78/external-Light-Mode-interface-linear-outline-icons-papa-vector.png" alt="Light"/>
-            {/* <Image src={dark} width={20} height={20} alt="dark" /> */}
+            <Image
+              width={20}
+              height={20}
+              src={isDarkMode ? lightModeIcon : darkModeIcon}
+              alt={isDarkMode ? "Light Mode" : "Dark Mode"}
+            />
           </button>
           <Link href="/profile" className={styles.navItem}>
             Hesabım

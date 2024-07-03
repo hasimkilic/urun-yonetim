@@ -1,7 +1,68 @@
 $small: 600px;
 $color-primary: #1f2a38;
 $color-text: #fff;
+$color-primary-dark: #121212;
+$color-text-dark: #ffffff;
+$color-primary-light: #1f2a38;
+$color-text-light: #fff;
+.darkMode {
+  --color-primary: #{$color-primary-dark};
+  --color-text: #{$color-text-dark};
 
+  .header {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+  }
+
+  .brand {
+    color: var(--color-text);
+  }
+
+  .siteHeaderWrapper {
+    color: var(--color-text);
+
+    .navItem {
+      color: var(--color-text);
+
+      a {
+        color: var(--color-text);
+      }
+    }
+  }
+
+  .navToggle {
+    color: var(--color-text);
+  }
+}
+.lightMode {
+  --color-primary: #{$color-primary-light};
+  --color-text: #{$color-text-light};
+
+  .header {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+  }
+
+  .brand {
+    color: var(--color-text);
+  }
+
+  .siteHeaderWrapper {
+    color: var(--color-text);
+
+    .navItem {
+      color: var(--color-text);
+
+      a {
+        color: var(--color-text);
+      }
+    }
+  }
+
+  .navToggle {
+    color: var(--color-text);
+  }
+}
 .header {
   display: flex;
   justify-content: space-between;
