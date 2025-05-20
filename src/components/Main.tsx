@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import styles from "@/styles/Main.module.scss";
 import stylesT from "@/styles/Table.module.scss";
 import Link from "next/link";
-import upArrow from "../../public/upArrow.svg";
-import downArrow from "../../public/downArrow.svg";
+const upArrow = "/upArrow.svg";
+const downArrow = "/downArrow.svg";
 import { Post } from "@/types/Posts";
 import { MainProps } from "@/types/MainProps";
 

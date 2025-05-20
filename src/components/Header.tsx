@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import styles from "@/styles/Header.module.scss";
 import Link from "next/link";
 import Image from "next/image";
-import darkModeIcon from "../../public/darkMode.svg";
-import lightModeIcon from "../../public/lightMode.svg";
+const darkModeIcon = "/darkMode.svg";
+const lightModeIcon = "/lightMode.svg";
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
