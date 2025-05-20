@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import styles from "@/styles/Header.module.scss";
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 import darkModeIcon from "../../public/darkMode.svg";
 import lightModeIcon from "../../public/lightMode.svg";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { t } = useTranslation('common');
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -34,13 +37,13 @@ export default function Header() {
           </button>
           <ul className={styles.navWrapper}>
             <li className={styles.navItem}>
-              <Link href="/dashboard">Anasayfa</Link>
+              <Link href="/dashboard">{t('nav.home')}</Link>
             </li>
             <li className={styles.navItem}>
-              <Link href="/services">Ayarlar</Link>
+              <Link href="/services">{t('nav.settings')}</Link>
             </li>
             <li className={styles.navItem}>
-              <Link href="/contact">İletişim</Link>
+              <Link href="/contact">{t('nav.contact')}</Link>
             </li>
           </ul>
         </nav>
@@ -59,8 +62,9 @@ export default function Header() {
             />
           </button>
           <Link href="/profile" className={styles.navItem}>
-            Hesabım
+            {t('nav.account')}
           </Link>
+          <LanguageSwitcher />
         </div>
       </div>
     </header>

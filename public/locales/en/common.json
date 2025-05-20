@@ -1,0 +1,11 @@
+{
+  "nav": {
+    "home": "Home",
+    "settings": "Settings",
+    "contact": "Contact",
+    "account": "Account"
+  },
+  "footer": {
+    "designedBy": "Designed by"
+  }
+}

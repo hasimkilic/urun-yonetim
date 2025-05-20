@@ -1,8 +1,10 @@
 import React from "react";
 import styles from "@/styles/Footer.module.scss";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation('common');
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
@@ -15,22 +17,22 @@ export default function Footer() {
               <ul className={styles.footer__navList}>
                 <li className={styles.footer__navItem}>
                   <Link href="/dashboard" className={styles.footer__navLink}>
-                    Anasayfa
+                    {t('nav.home')}
                   </Link>
                 </li>
                 <li className={styles.footer__navItem}>
                   <Link href="/services" className={styles.footer__navLink}>
-                    Ayarlar
+                    {t('nav.settings')}
                   </Link>
                 </li>
                 <li className={styles.footer__navItem}>
                   <Link href="/contact" className={styles.footer__navLink}>
-                    İletişim
+                    {t('nav.contact')}
                   </Link>
                 </li>
                 <li className={styles.footer__navItem}>
                   <Link href="/profile" className={styles.footer__navLink}>
-                    Hesabım
+                    {t('nav.account')}
                   </Link>
                 </li>
               </ul>
@@ -89,7 +91,7 @@ export default function Footer() {
         </div>
         <div className={styles.footer__copyrights}>
           <p>
-            Tasarlayan
+            {t('footer.designedBy')}
             <Link href="https://hasimkilicdev.vercel.app/" target="_blank">
               HaşimK
             </Link>
