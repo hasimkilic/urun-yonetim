@@ -1,0 +1,11 @@
+{
+  "nav": {
+    "home": "Anasayfa",
+    "settings": "Ayarlar",
+    "contact": "İletişim",
+    "account": "Hesabım"
+  },
+  "footer": {
+    "designedBy": "Tasarlayan"
+  }
+}
